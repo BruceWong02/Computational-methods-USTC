@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "model.h": "c",
+        "coorcal.h": "c",
+        "cmath": "c",
+        "*.tcc": "c",
+        "lineariteration.h": "c",
+        "linearfuncssolver.h": "c",
+        "math.h": "c"
+    }
+}
