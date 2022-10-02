@@ -134,14 +134,15 @@ void GetXofUX(int n, double **U, double *Y, double *X)
 }
 
 
-void MinEig_IPM(double **A, int n, double epsilon)
+void MinEig_IPM(char *filename, double **A, int n, double epsilon)
 {
     // init
     // AX = Y <=> LUX = Y
+    int N = n;
     double lambda1 = 1.; // last lambda
     double lambda2 = 1.; // new lambda
-    double X[n];
-    double Y[n];
+    double X[N];
+    double Y[N];
     for (int i=0;i<n;i++)
     {
         X[i] = 1.;
@@ -149,8 +150,9 @@ void MinEig_IPM(double **A, int n, double epsilon)
     double UX[n];
     int k = 0;
 
+
     // Create output file.
-    FILE * fp = fopen("Result.csv", "w+");
+    FILE * fp = fopen(filename, "w+");
     if (NULL == fp)
     {
         printf("fopen() failed!!!");
@@ -170,8 +172,13 @@ void MinEig_IPM(double **A, int n, double epsilon)
         fprintf(fp, ",");
     }
 
+
     // Doolittle
     double **L = MatrixGenerator(n, n);
+    for (int i=0;i<n;i++)
+    {
+        L[i][i] = 1; // init L
+    }
     double **U = MatrixGenerator(n, n);
     DoolittleDecom(n, A, L, U);
 
@@ -213,7 +220,7 @@ void MinEig_IPM(double **A, int n, double epsilon)
     } while (abs(lambda2 - lambda1) > epsilon);
     
 
-    printf((0 == fclose(fp)) ? "Results saved successfully." : "Results saving failed.");  
+    printf((0 == fclose(fp)) ? "Results saved successfully.\n" : "Results saving failed.");  
 
 }
 

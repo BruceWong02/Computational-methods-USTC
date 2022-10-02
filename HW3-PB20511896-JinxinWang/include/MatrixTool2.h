@@ -1,7 +1,7 @@
 /*******************************************************************************
  * @Coding: UTF-8
  * @copyright (C), 2022, Bruce Wong, All rights reserved.
- * @FileName    : LinearFuncsSolver.h
+ * @FileName    : MatrixTool2.h
  * @Author      : Bruce wong
  * @Version     : 
  * @Date        : 2022-10-01 21:02:56
@@ -19,8 +19,8 @@
  *      The input of A2 is though a txt file.
  ******************************************************************************/
 
-#ifndef __LINEARFUNCSSOLVER_H__
-    #define __LINEARFUNCSSOLVER_H__
+#ifndef __MATRIXTOOL2_H__
+    #define __MATRIXTOOL2_H__
 
 
     #include <stdio.h>
@@ -52,7 +52,7 @@
 
     /*Using the Inverse Power Method to find 
         minimum eigenvalue of modulus and eigenvector */
-    void MinEig_IPM(double **A, int n, double epsilon);
+    void MinEig_IPM(char *filename, double **A, int n, double epsilon);
 
     /* Y=UX
         L(UX)=b <=> LY=b

@@ -20,8 +20,8 @@ int main()
     FillA1(A1);
     FillA2(A2);
 
-    MinEig_IPM(A1, 5, 0.00001);
-    MinEig_IPM(A2, 4, 0.00001);
+    MinEig_IPM("ResultA1.csv", A1, 5, 0.00001);
+    MinEig_IPM("ResultA2.csv", A2, 4, 0.00001);
 
     FreeMatrixMemory(A1, 5);
     FreeMatrixMemory(A2, 4);
