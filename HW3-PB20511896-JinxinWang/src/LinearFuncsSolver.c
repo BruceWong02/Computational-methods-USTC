@@ -3,21 +3,21 @@
 
 double** MatrixGenerator(int n, int m)
 {
-    double **Matrix;
-
     // detect input error
     if (n<=0 || m<=0)
     {
         printf("Matrix parameters input error!!!");
-        return NULL;
+        exit(-1);
     }
 
     // generate Matrix with malloc
-    Matrix = (double **)malloc(sizeof(double *)*n);
+    double **Matrix = (double **)malloc(sizeof(double *)*n);
     for (int i=0;i<m;i++)
     {
         Matrix[i] = (double *)malloc(sizeof(double)*m);
     }
+
+    Init2Zero(n, m, Matrix);
 
     return Matrix;
 }
@@ -30,6 +30,18 @@ void FreeMatrixMemory(double **Matrix, int m)
         free(Matrix[i]);
     }
     free(Matrix);
+}
+
+
+void Init2Zero(int n, int m, double **M)
+{
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<m;j++)
+        {
+            M[i][j] = 0;
+        }
+    }
 }
 
 
@@ -50,8 +62,8 @@ void FillA2(double **A2)
     FILE * fp = fopen("A2.txt", "r");
     if (NULL == fp)
     {
-        printf("Failed to open A2.txt!!!");
-        exit(-1);
+        printf("fopen() failed!!!");
+        exit(EXIT_FAILURE);
     }
 
     for (int i=0;i<5;i++)
@@ -66,46 +78,117 @@ void FillA2(double **A2)
 }
 
 
-void DoolittleFactor(double **A, double **L, double **U)
+void DoolittleDecom(int n, double **A, double **L, double **U)
 {
-    int i;
+    for (int i=0;i<n;i++)
+    {
+        // Calculate row i of U
+        for (int j=i;j<n;j++)
+        {
+            U[i][j] = A[i][j];
+            for (int j1=0;j1<i-1;j1++)
+            {
+                U[i][j] = U[i][j] - L[i][j1] * U[j1][i];
+            }
+        }
+        // Calculate coloum i of L
+        for (int k=i+1;k<n;k++)
+        {
+            L[k][i] = A[k][i];
+            for (int k1=0;k1<i-1;k1++)
+            {
+                L[k][i] = L[k][i] - L[k][k1] * U[k1][k];
+            }
+            L[k][i] = L[k][i]/U[i][i];
+        }
+    }
 }
 
-void GetUX_Doo(int n, double **L, double *b, double *Y)
-{
 
+void GetYofLY(int n, double **L, double *b, double *Y)
+{
+    for (int i=0;i<n;i++)
+    {
+        Y[i] = b[i];
+        for (int j=0;j<i;j++)
+        {
+            Y[i] = Y[i] - Y[j]*L[i][j];
+        }
+        Y[i] = Y[i]/L[i][i];
+    }
 }
 
-void GetX_Doo(int n, double **U, double *Y, double *X)
+
+void GetXofUX(int n, double **U, double *Y, double *X)
 {
-    
+    for (int i=n-1;i>-1;i--)
+    {
+        X[i] = Y[i];
+        for (int k=n-1;k>i;k--)
+        {
+            X[i] = X[i] - X[k]*U[i][k];
+        }
+        X[i] = X[i]/U[i][i];
+    }
 }
 
 
 void MinEig_IPM(double **A, int n, double epsilon)
 {
+    // init
+    // AX = Y <=> LUX = Y
+    double lambda1 = 1.; // last lambda
+    double lambda2 = 1.; // new lambda
     double X[n];
     double Y[n];
-    double lambda1 = 1.;
-    double lambda2 = 1.;
     for (int i=0;i<n;i++)
     {
         X[i] = 1.;
     }
+    double UX[n];
+    int k = 0;
 
-    double **L, **U;
-    DoolittleFactor(A, L, U);
+    // Create output file.
+    FILE * fp = fopen("Result.csv", "w+");
+    if (NULL == fp)
+    {
+        printf("fopen() failed!!!");
+        exit(EXIT_FAILURE);
+    }
+    // init output file
+    // title
+    fprintf(fp, "k,Lambda,X(k),");
+    for (int i=1;i<n;i++)
+    {
+        fprintf(fp, ",");
+    }
+    fprintf(fp, "Y(k)\n%d,,", k);
+    // second line
+    for (int i=0;i<n;i++)   
+    {
+        fprintf(fp, ",");
+    }
+
+    // Doolittle
+    double **L = MatrixGenerator(n, n);
+    double **U = MatrixGenerator(n, n);
+    DoolittleDecom(n, A, L, U);
+
 
     do
     {
-        // update
+        // update Y
         for (int i=0;i<n;i++)
         {
             Y[i] = X[i]/lambda2;
+            fprintf(fp, "%f,", Y[i]); // Output Y
         }
+        fprintf(fp, "\n"); // line break
         lambda1 = lambda2;
 
-        GetX_Doo(n, U, Y, X);
+        // calculate X
+        GetYofLY(n, L, Y, UX);
+        GetXofUX(n, U, UX, X);
 
         // get lambda2
         lambda2 = X[0];
@@ -116,13 +199,20 @@ void MinEig_IPM(double **A, int n, double epsilon)
                 lambda2 = X[i];
             }
         }
+        
+        k++;
+
+        // Output result
+        fprintf(fp, "%d,%f,", k, lambda2);
+        for (int i=0;i<n;i++)   
+        {
+            fprintf(fp, "%f,", X[i]); // Output X
+        }
 
     } while (abs(lambda2 - lambda1) > epsilon);
     
-    
-    
 
-
-    // printf("sizeof X[n] : %d", sizeof(X));
+    printf((0 == fclose(fp)) ? "Results saved successfully." : "Results saving failed.");  
 
 }
+

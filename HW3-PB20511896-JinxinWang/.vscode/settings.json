@@ -6,6 +6,7 @@
         "*.tcc": "c",
         "lineariteration.h": "c",
         "linearfuncssolver.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "stdlib.h": "c"
     }
 }
