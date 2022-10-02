@@ -8,7 +8,7 @@
  * @Description: 
  *************************************************************/
 
-#include "./include/LinearFuncsSolver.h"
+#include "./include/MatrixTool2.h"
 
 
 int main()

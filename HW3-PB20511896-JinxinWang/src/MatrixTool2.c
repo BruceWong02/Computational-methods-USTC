@@ -1,5 +1,6 @@
 
-#include "../include/LinearFuncsSolver.h"
+#include "../include/MatrixTool2.h"
+
 
 double** MatrixGenerator(int n, int m)
 {
