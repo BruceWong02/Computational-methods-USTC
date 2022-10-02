@@ -219,8 +219,13 @@ void MinEig_IPM(char *filename, double **A, int n, double epsilon)
 
     } while (fabs(lambda2 - lambda1) > epsilon);
     
-
-    printf((0 == fclose(fp)) ? "Results saved successfully.\n" : "Results saving failed.");  
+    printf("Minimum eigenvalue: %f\nEigenvector:\n(%f", 1/lambda2, Y[0]);
+    for (int i=1;i<n-1;i++)
+    {
+        printf("   %f", Y[i]);
+    }
+    printf("   %f)\n", Y[n-1]);
+    printf((0 == fclose(fp)) ? "Process saved successfully.\n" : "Results saving failed.");  
 
 }
 
