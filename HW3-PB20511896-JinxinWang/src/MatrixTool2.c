@@ -71,7 +71,7 @@ void FillA2(double **A2)
     {
         for (int j=0;j<5;j++)
         {
-            fscanf(fp, "%d", &A2[i][j]);
+            fscanf(fp, "%lf", &A2[i][j]);
         }
     }
 
@@ -202,7 +202,7 @@ void MinEig_IPM(char *filename, double **A, int n, double epsilon)
         lambda2 = X[0];
         for (int i=1;i<n;i++)
         {
-            if (abs(X[i]) > abs(lambda2))
+            if (fabs(X[i]) > fabs(lambda2))
             {
                 lambda2 = X[i];
             }
@@ -217,7 +217,7 @@ void MinEig_IPM(char *filename, double **A, int n, double epsilon)
             fprintf(fp, "%f,", X[i]); // Output X
         }
 
-    } while (abs(lambda2 - lambda1) > epsilon);
+    } while (fabs(lambda2 - lambda1) > epsilon);
     
 
     printf((0 == fclose(fp)) ? "Results saved successfully.\n" : "Results saving failed.");  
