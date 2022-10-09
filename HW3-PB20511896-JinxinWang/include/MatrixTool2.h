@@ -7,7 +7,8 @@
  * @Date        : 2022-10-01 21:02:56
  * @Description : Declare functions; Include all heaeder files.
  *      
- *      Main functions including generate n x m Matrix padded with 0,
+ *      Main functions including
+ *          generate n x m Matrix padded with 0,
  *          Initiate all of n x m Matrix's elements to 0,
  *          Doolittle decomposition,
  *          Slove Y from LY=b where L is a lower trigonometric matrix,
