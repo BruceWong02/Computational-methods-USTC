@@ -24,7 +24,14 @@
 #include "include/MatrixTool3.h"
 
 int main(){
+    // (a)
+    double **A = MatrixGenerator(4, 3, MatrixInit_Rand_0_1);
+    double **AAT = MatrixGenerator(4, 4, MatrixInit_0);
+    double AAT_eigvalue[4];
 
+    // MatrixMutiply(4, 3, A, );
+    Eigvalue_Jacobi(4, AAT, AAT_eigvalue);
+    
 
 
 

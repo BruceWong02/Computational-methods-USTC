@@ -33,16 +33,33 @@
     /* Free memory used to generate Matrix */
     void FreeMatrixMemory(double **Matrix, int m);
 
-    /* Initialized (n x m) Matrix with random number in [0, 1] */
-    void InitRand_0_1(int n, int m, double **Matrix);
+    /* Initialized (n x m) matrix with random number in [0, 1] */
+    void MatrixInit_Rand_0_1(int n, int m, double **Matrix);
+
+    /* Initialize (n x m) matrix with same number */
+    void MatrixInit_0(int n, int m, double **M);
+
+    /* Initialize a vector whose elements are all the same */
+    void VectInit_Same(int n, double *Vector, double value);
+
+    /* Calculate distance between vector x1 and vector x0.*/
+    double Distance(int n, double *X1, double *X0);
+
+    /* Matrix mutiply. Matrix3 = (nxm)Matrix1 * (mxn)Matrix2 */
+    void MatrixMutiply(int n, int m, double **Matrix1, double **Matirx2, double **Matrix3);
+
+    /*
+    Solve system of linear functions by Gauss-Seidel Iteration
+
+    pars:
+        Ax=b => x = (I - D^{-1}A)x + D^{-1}b
+        let M=I-D^{-1}A   b=D^{-1}b => x=Mx+b
+    */
+    void Gauss_Seidel_iter(int n, double **A, double *X, double *b, double delta);
 
     // 
     /* Caluculate eigvalues by Jacobi method */
     void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues);
-
-    // 
-    /* Solve system of linear functions by Gauss-Seidel Iteration */
-    void Gauss_Seidel_iter(int n, double **Matrix, double *X, double *Y);
 
     // 
     /*
@@ -59,9 +76,7 @@
     /* SVD decomposition */
     void SVD();
 
-    // 
-    /* Generate a vector whose elements are all the same */
-    void VectGener_Same(int n, double value);
+
 
 #endif
 

@@ -52,7 +52,7 @@ void FillA1(double **A1)
     {
         for (int j=0;j<5;j++)
         {
-            A1[i][j] = 1./(9-i-j);
+            A1[i][j] = 1./(9.0-i-j);
         }
     }
 }
@@ -87,18 +87,18 @@ void DoolittleDecom(int n, double **A, double **L, double **U)
         for (int j=i;j<n;j++)
         {
             U[i][j] = A[i][j];
-            for (int j1=0;j1<i-1;j1++)
+            for (int j1=0;j1<i;j1++)
             {
-                U[i][j] = U[i][j] - L[i][j1] * U[j1][i];
+                U[i][j] = U[i][j] - L[i][j1] * U[j1][j];
             }
         }
         // Calculate coloum i of L
         for (int k=i+1;k<n;k++)
         {
             L[k][i] = A[k][i];
-            for (int k1=0;k1<i-1;k1++)
+            for (int k1=0;k1<i;k1++)
             {
-                L[k][i] = L[k][i] - L[k][k1] * U[k1][k];
+                L[k][i] = L[k][i] - L[k][k1] * U[k1][i];
             }
             L[k][i] = L[k][i]/U[i][i];
         }
@@ -181,6 +181,23 @@ void MinEig_IPM(char *filename, double **A, int n, double epsilon)
     }
     double **U = MatrixGenerator(n, n);
     DoolittleDecom(n, A, L, U);
+
+    // // for debug
+    // printf("L\n");
+    // for (int i=0;i<n;i++){
+    //     for (int j=0;j<n;j++){
+    //         printf("\t%f", L[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    // printf("U\n");
+    // for (int i=0;i<n;i++){
+    //     for (int j=0;j<n;j++){
+    //         printf("\t%f", U[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    // exit(EXIT_SUCCESS);
 
 
     do
