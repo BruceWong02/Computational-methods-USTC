@@ -67,9 +67,9 @@ void FillA2(double **A2)
         exit(EXIT_FAILURE);
     }
 
-    for (int i=0;i<5;i++)
+    for (int i=0;i<4;i++)
     {
-        for (int j=0;j<5;j++)
+        for (int j=0;j<4;j++)
         {
             fscanf(fp, "%lf", &A2[i][j]);
         }
