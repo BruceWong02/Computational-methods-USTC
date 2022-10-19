@@ -24,8 +24,14 @@
 
     #include <stdio.h>
     #include <stdlib.h>
+    #include <math.h>
     #include <time.h>
 
+    /* Show Matrix for debuging*/
+    void Debug_ShowMatrix(int n, int m, double **M, int exit_);
+    
+    /* Show Vector for debuging*/
+    void Debug_ShowVector(int n, double *Vect, int exit_);
 
     /* Generate (n x m) Matrix initiated with init() */
     double** MatrixGenerator(int n, int m, void(*init)(int, int, double**));
@@ -45,37 +51,55 @@
     /* Calculate distance between vector x1 and vector x0.*/
     double Distance(int n, double *X1, double *X0);
 
+    /* Normalize Vector */
+    void VectNorm(int n, double *Vector);
+
     /* Matrix mutiply. Matrix3 = (nxm)Matrix1 * (mxn)Matrix2 */
     void MatrixMutiply(int n, int m, double **Matrix1, double **Matirx2, double **Matrix3);
 
-    /*
-    Solve system of linear functions by Gauss-Seidel Iteration
+    /* (nxm) Matrix Transpose */
+    void MatrixTranspose(double n, double m, double **Matrix, double **MatrixT);
 
+    /* Use Gauss elimination with partial pivoting. 
+    
+    pars:
+        DetIs0: Is DetA 0? 0 for DetA != 0; 1 for DetA == 0; -1 for Auto Juage.
+            Input not included above will result in Error report.              */
+    void GaussElim_PartialPivoting(int n, double **A, double *X, double *b, int DetIs0);
+
+    /*  Solve system of linear functions by Gauss-Seidel Iteration
     pars:
         Ax=b => x = (I - D^{-1}A)x + D^{-1}b
-        let M=I-D^{-1}A   b=D^{-1}b => x=Mx+b
-    */
+        let M=I-D^{-1}A   b=D^{-1}b => x=Mx+b                   */
     void Gauss_Seidel_iter(int n, double **A, double *X, double *b, double delta);
 
-    // 
     /* Caluculate eigvalues by Jacobi method */
-    void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues);
+    void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon);
 
-    // 
-    /*
-    Calculate one eigvector of Matrix with a known eigvalue.
-    Here we transform the quetion to calculate the solution of a system of linear functions.
+    /*  Calculate one eigvector of Matrix with a known eigvalue directly.
+    Here we transform the quetion to calculate the solution of a system 
+    of linear functions.
 
     pars:
-        solver() is used to solve system of linear functions.
-    */
-    void Eigvector(int n, double **Matrix, double *Eigvector,
-                    void(*solver)(int, double**, double*, double*));
+        solver() is used to solve system of linear functions.           */
+    void Eigvector(int n, double **Matrix, double *Eigvectors, double EigValue, 
+                    void(*solver)(int, double**, double*, double*, int));
 
-    // 
+    /*  Calculate one eigvector of Matrix with a known eigvalue by a iterational method.
+    Here we transform the quetion to calculate the solution of a system 
+    of linear functions.
+
+    pars:
+        solver() is used to solve system of linear functions.           */
+    void Eigvector_iter(int n, double **Matrix, double *Eigvectors, double EigValue, double epsilon,
+                    void(*solver)(int, double**, double*, double*, double));
+
     /* SVD decomposition */
-    void SVD();
+    void SVD(int n, int m, double **A, double **U, double **Sigma, 
+            double **VT, double epsilon);
 
+    /* PCA projection */
+    void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM);
 
 
 #endif
