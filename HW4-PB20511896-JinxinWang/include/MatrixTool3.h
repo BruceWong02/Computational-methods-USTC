@@ -98,8 +98,14 @@
     void SVD(int n, int m, double **A, double **U, double **Sigma, 
             double **VT, double epsilon);
 
-    /* PCA projection */
-    void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM);
+    /* PCA projection 
+    
+    Pars:
+        NeedBuffer: Buffer here is used as a copy of original Matrix in order to 
+        make sure original Matrix won't be changed after this process. You can also 
+        change original Matrix if you want.
+        1 for buffer, others for no.                                            */
+    void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM, int NeedBUffer);
 
 
 #endif

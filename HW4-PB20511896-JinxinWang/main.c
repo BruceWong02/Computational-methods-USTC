@@ -71,6 +71,7 @@ int main(){
     FreeMatrixMemory(Sigma, 4);
     FreeMatrixMemory(VT, 3);
 
+    // ****************************************************
     // (b)
     double **IrisDatas = MatrixGenerator(4, 150, MatrixInit_0);
     double **FinalM = MatrixGenerator(2, 150, MatrixInit_0);
@@ -89,7 +90,7 @@ int main(){
     printf((0 == fclose(fp)) ? "File closed successfully.\n" : "Failed to close file."); 
 
 
-    PCA(4, 150, IrisDatas, epsilon, 2, FinalM);
+    PCA(4, 150, IrisDatas, epsilon, 2, FinalM, 1);
 
     // Create output file.
     char *filename1 = "result.csv";
@@ -102,7 +103,6 @@ int main(){
     for (int i=0;i<150;i++){
         fprintf(fp1, "%f,%f,%d\n", FinalM[0][i], FinalM[1][i], labels[i]);
     }
-
     printf((0 == fclose(fp1)) ? "Results saved successfully.\n" : "Results saving failed.");  
 
 

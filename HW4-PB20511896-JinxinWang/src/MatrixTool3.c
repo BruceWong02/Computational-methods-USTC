@@ -302,6 +302,16 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
         }
     }   
 
+    // Homework requirement, you can delete it if you think it useless.
+    // Output sum_nondiag2
+    // Create output file.
+    char *filename = "Sum_NonDiag2.csv";
+    FILE * fp = fopen(filename, "w+");
+    if (NULL == fp){
+        printf("fopen() failed!!!");
+        exit(EXIT_FAILURE);
+    }
+
     do
     {
         sum_nondiag2 = 0.;
@@ -312,7 +322,7 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
         // 选取非对角按模最大
         for (int i=0;i<n;i++){
             for (int j=0;j<n;j++){
-                if (i!=j && fabs(MaxNondiag)<fabs(MatrixBuffer[i][j])){
+                if ((i!=j) && (fabs(MaxNondiag)<fabs(MatrixBuffer[i][j]))){
                     MaxNondiag = MatrixBuffer[i][j];
                     MaxNondiag_p = i;
                     MaxNondiag_q = j;
@@ -325,16 +335,19 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
                 (2.*MatrixBuffer[MaxNondiag_p][MaxNondiag_q]);
         if (0.==s){
             t = 1.;
+            cos = 1. / sqrt(2);
+            sin = 1. / sqrt(2);
         }
         else {
             t = (s>0 ? (-s+sqrt(1+s*s)) : (-s-sqrt(1+s*s)));
+            cos = 1. / sqrt(1+t*t);
+            sin = t / sqrt(1+t*t);
         }
-        cos = 1. / sqrt(1+t*t);
-        sin = t / sqrt(1+t*t);
+        
 
         // Update elements
         for (int i=0;i<n;i++){
-            if (i==MaxNondiag_p || i==MaxNondiag_q){
+            if ((i==MaxNondiag_p) || (i==MaxNondiag_q)){
                 continue;
             }
 
@@ -350,10 +363,10 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
         }
         double B_pp = MatrixBuffer[MaxNondiag_p][MaxNondiag_p]*cos*cos + 
             MatrixBuffer[MaxNondiag_q][MaxNondiag_q]*sin*sin - 
-                MatrixBuffer[MaxNondiag_p][MaxNondiag_q]*2*sin*cos;
+                MatrixBuffer[MaxNondiag_p][MaxNondiag_q]*2.*sin*cos;
         double B_qq = MatrixBuffer[MaxNondiag_p][MaxNondiag_p]*sin*sin + 
             MatrixBuffer[MaxNondiag_q][MaxNondiag_q]*cos*cos + 
-                MatrixBuffer[MaxNondiag_p][MaxNondiag_q]*2*sin*cos;
+                MatrixBuffer[MaxNondiag_p][MaxNondiag_q]*2.*sin*cos;
         // B[p][q] = B[q][p]
         double B_pq = MatrixBuffer[MaxNondiag_p][MaxNondiag_q]*(cos*cos - sin*sin) + 
             (MatrixBuffer[MaxNondiag_p][MaxNondiag_p]-MatrixBuffer[MaxNondiag_q][MaxNondiag_q])*sin*cos;
@@ -365,12 +378,18 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
         // calculate Sum(Matrix[i][j] for i != j)
         for (int i=0;i<n;i++){
             for (int j=0;j<n;j++){
-                sum_nondiag2 = sum_nondiag2 + (i==j ? 0. : MatrixBuffer[i][j]);
+                sum_nondiag2 = sum_nondiag2 + (i==j ? 0. : MatrixBuffer[i][j]*MatrixBuffer[i][j]);
             }
         }
 
-    } while (sum_nondiag2 > epsilon);
+        // Output result
+        fprintf(fp, "%f\n", sum_nondiag2);
 
+    } while (sum_nondiag2 > epsilon);
+    printf((0 == fclose(fp)) ? "File closed successfully.\n" : "Failed to close file."); 
+
+
+    // return results
     for (int i=0;i<n;i++){
         Eigvalues[i] = MatrixBuffer[i][i];
     }
@@ -435,6 +454,17 @@ void SVD(int n, int m, double **A, double **U, double **Sigma,
     MatrixMutiply(m, n, AT, A, AT_A);
 
 
+    // Homework requirement. You can delete it if you think it useless.
+    printf("A*A^T : \n");
+    for (int i=0;i<n;i++){
+        printf("{ ");
+        for (int j=0;j<n;j++){
+            printf("%f  ", A_AT[i][j]);            
+        }
+        printf("\b}\n");
+    }
+
+
     // A*AT => U
     Eigvalue_Jacobi(n, A_AT, A_AT_eigvalues, epsilon);    
     // sort eigenvalues >
@@ -494,15 +524,21 @@ void SVD(int n, int m, double **A, double **U, double **Sigma,
 }
 
 
-void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM)
+void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM, int NeedBUffer)
 {
     // buffer
-    double **A = MatrixGenerator(n, m, MatrixInit_0);
-    for (int i=0;i<n;i++){
-        for (int j=0;j<m;j++){
-            A[i][j] = M[i][j];
-        }
-    }       
+    double **A;
+    if (1==NeedBUffer){
+        A = MatrixGenerator(n, m, MatrixInit_0);
+        for (int i=0;i<n;i++){
+            for (int j=0;j<m;j++){
+                A[i][j] = M[i][j];
+            }
+        }       
+    }
+    else {
+        A = M;
+    }
 
     // uncerternize
     double meanVect[n];
@@ -529,6 +565,18 @@ void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM
     MatrixTranspose(n, m, A, AT);
     MatrixMutiply(n, m, A, AT, A_AT);
 
+
+    // Homework requirement. You can delete it if you think it useless.
+    printf("X*X^T/m : \n");
+    for (int i=0;i<n;i++){
+        printf("[ ");
+        for (int j=0;j<n;j++){
+            printf("%f  ", A_AT[i][j]);            
+        }
+        printf("\b]\n");
+    }
+
+
     Eigvalue_Jacobi(n, A_AT, A_AT_eigvalues, epsilon);    
     // sort eigenvalues >
     for (int i=0;i<n;i++){
@@ -549,7 +597,7 @@ void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM
         for (int j=0;j<m;j++){
             FinalM[i][j] = 0.;
             for (int k=0;k<n;k++){
-                FinalM[i][j] = FinalM[i][j] + M[k][j]*ProjectionBase[k];
+                FinalM[i][j] = FinalM[i][j] + A[k][j]*ProjectionBase[k];
             }
         }
     }
