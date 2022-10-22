@@ -571,7 +571,7 @@ void PCA(int n, int m, double **M, double epsilon, int FinalDim, double **FinalM
     for (int i=0;i<n;i++){
         printf("[ ");
         for (int j=0;j<n;j++){
-            printf("%f  ", A_AT[i][j]);            
+            printf("%f  ", A_AT[i][j]/m);            
         }
         printf("\b]\n");
     }
