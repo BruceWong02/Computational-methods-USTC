@@ -390,9 +390,13 @@ void Eigvalue_Jacobi(int n, double **Matrix, double *Eigvalues, double epsilon)
 
 
     // return results
+    printf("EigenValues: \n");
     for (int i=0;i<n;i++){
         Eigvalues[i] = MatrixBuffer[i][i];
+        // homework requirement.
+        printf("%f  ", Eigvalues[i]);
     }
+    printf("\n");
 
     FreeMatrixMemory(MatrixBuffer, n);
 }
