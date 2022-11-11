@@ -29,14 +29,14 @@ int main(){
     // (a)
     char *filename = "point.txt";
     const int nPoints = fileLineNum(filename);
-    double Ms[nPoints-2];
+    double Ms[nPoints];
     Spline_M(filename, Ms, 0);
 
     // ****************************************************
     // (b)
     char *filename2 = "point_b.txt";
     const int nPoints2 = fileLineNum(filename2);
-    double Ms2[nPoints2-2];
+    double Ms2[nPoints2];
     Spline_M(filename2, Ms2, 0);
 
     return 0;

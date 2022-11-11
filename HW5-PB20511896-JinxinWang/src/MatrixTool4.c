@@ -97,6 +97,7 @@ void Thomas(int n, double **Mn3, double *b, double *x)
     }
 }
 
+
 int fileLineNum(char *filename)
 {
     // Read Datas
@@ -118,6 +119,7 @@ int fileLineNum(char *filename)
     
     return count;
 }
+
 
 void Spline_M(char *filename, double *Ms, int condition)
 {
@@ -143,8 +145,9 @@ void Spline_M(char *filename, double *Ms, int condition)
     // set of linear functions
     // A*xM = b
     double **A = MatrixGenerator(nPoints-2, 3, MatrixInit_0);
-    double xM[nPoints-1];
-    double b[nPoints-1];
+    double M[nPoints];
+    double xM[nPoints-2];
+    double b[nPoints-2];
 
     double mu[nPoints-1];
     double lambda[nPoints-1];
@@ -169,11 +172,16 @@ void Spline_M(char *filename, double *Ms, int condition)
         }
     }
     
+    // Debug_ShowVector(nPoints-2, b, 1);
+    // Debug_ShowMatrix(nPoints-2, 3, A, 1);
+
     Thomas(nPoints-2, A, b, xM);
 
+    M[0] = 0.;
     for (int i=1;i<(nPoints-1);i++){
-        Ms[i-1] = xM[i];
+        M[i] = xM[i-1];
     }
+    M[nPoints-1] = 0.;
 
 
     // homework requirement
@@ -195,12 +203,12 @@ void Spline_M(char *filename, double *Ms, int condition)
     double a4 = 0.;
     printf("\n");
     for (int i=0;i<(nPoints-1);i++){
-        a1 = (xM[i+1]-xM[i])/(6*h[i]);
-        a2 = (x[i+1]*xM[i]-x[i]*xM[i+1])/(2*h[i]);
-        a3 = (3*(x[i]*x[i]*xM[i+1]-x[i+1]*x[i+1]*xM[i])+
-            6*(y[i+1]-y[i])-h[i]*h[i]*(xM[i+1]-xM[i]))/(6*h[i]);
-        a4 = (x[i+1]*x[i+1]*x[i+1]*xM[i]-x[i]*x[i]*x[i]*xM[i+1]+
-            6*(x[i+1]*y[i]-x[i]*y[i+1])-h[i]*h[i]*(x[i+1]*xM[i]-x[i]*xM[i+1]))
+        a1 = (M[i+1]-M[i])/(6*h[i]);
+        a2 = (x[i+1]*M[i]-x[i]*M[i+1])/(2*h[i]);
+        a3 = (3*(x[i]*x[i]*M[i+1]-x[i+1]*x[i+1]*M[i])+
+            6*(y[i+1]-y[i])-h[i]*h[i]*(M[i+1]-M[i]))/(6*h[i]);
+        a4 = (x[i+1]*x[i+1]*x[i+1]*M[i]-x[i]*x[i]*x[i]*M[i+1]+
+            6*(x[i+1]*y[i]-x[i]*y[i+1])-h[i]*h[i]*(x[i+1]*M[i]-x[i]*M[i+1]))
             /(6*h[i]);
         printf("[%d, %d]: S{%d}=", x[i], x[i+1], i);
         printf("(%f)*x^3 + ", a1);
