@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "matrixtool3.h": "c",
+        "complex.h": "c",
+        "fft.h": "c",
+        "numinte.h": "c"
+    }
+}
