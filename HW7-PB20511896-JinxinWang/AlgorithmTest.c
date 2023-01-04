@@ -22,16 +22,18 @@ double e = 0.000001;
 int n = 1;
 int M = 8;
 
-double Romberg_VBeta(double(*f)(double), double a, double b, int n, int M, double e);
+int HitTimes[5] = {0, 0, 0, 0, 0};
+
+double Romberg_VBeta(double(*f)(double), double a, double b, int n, int M, int flag);
 
 double ax(double t)
 {
     return sin(t)/(1+sqrt(t));
 }
 
-double vx(double t, int M)
+double vx(double t, int M, int flag)
 {
-    return Romberg_VBeta(ax, 0, t, n, M, e);
+    return Romberg_VBeta(ax, 0, t, n, M, flag);
 }
 
 
@@ -56,18 +58,22 @@ int main()
     for (int i=0;i<100;i++)
     {
         fprintf(fp, "%.7lf,%.7lf,%.7lf,%.7lf,%.7lf\n", 
-            vx(ts[i], Ms[0]), vx(ts[i], Ms[1]), vx(ts[i], Ms[2]), vx(ts[i], Ms[3]), vx(ts[i], Ms[4]));
+            vx(ts[i], Ms[0], 0), vx(ts[i], Ms[1], 1), vx(ts[i], Ms[2], 2), vx(ts[i], Ms[3], 3), vx(ts[i], Ms[4], 4));
     }
 
 
     printf((0 == fclose(fp)) ? "File closed successfully.\n" : "Failed to close file.\n"); 
     
 
+    printf("M\t4\t \t8\t \t12\t \t16\t \t20\nRate\t");
+    printf("%.7lf\t%.7lf\t%.7lf\t%.7lf\t%.7lf\n", 
+        HitTimes[0]/100., HitTimes[1]/100., HitTimes[2]/100., HitTimes[3]/100., HitTimes[4]/100.);
+
     return 0;
 }
 
 
-double Romberg_VBeta(double(*f)(double), double a, double b, int n, int M, double e)
+double Romberg_VBeta(double(*f)(double), double a, double b, int n, int M, int flag)
 {
     double h = b-a;
     double hk = 0.0;
@@ -100,6 +106,7 @@ double Romberg_VBeta(double(*f)(double), double a, double b, int n, int M, doubl
 
         if (fabs(R[k][k]-R[k-1][k-1]) < e)
         {
+            HitTimes[flag]++;
             return (double)(final_k+1)/(double)(m);
         }
     }
